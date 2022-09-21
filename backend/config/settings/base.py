@@ -2,6 +2,13 @@ import os
 import sys
 
 from pathlib import Path
+from datetime import timedelta
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -13,7 +20,9 @@ sys.path.insert(0, os.path.join(BASE_DIR, "apps"))
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-=%^d2j**78d2dwd-@i(&@d+cvl23i8e1vecd42(7-2&7y%!_#v'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-=%^d2j**78d2dwd-@i(&@d+cvl23i8e1vecd42(7-2&7y%!_#v')
+
+print(SECRET_KEY)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -49,7 +58,8 @@ THIRD_PARTY = [
 # articles, posts, books ...
 LOCAL_APPS = [
 	'users',
-	'posts'
+	'posts',
+	'videos'
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY + LOCAL_APPS
@@ -135,6 +145,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+MEDIA_URL = '/media/'
+
+STATIC_ROOT = os.path.join(STATIC_DIR, 'static/')
+MEDIA_ROOT = os.path.join(STATIC_DIR, 'media/')
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -154,4 +174,11 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "PAGE_SIZE": 10,
     "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
+}
+
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'	
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=14),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
 }
